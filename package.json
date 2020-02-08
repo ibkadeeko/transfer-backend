@@ -1,0 +1,67 @@
+{
+  "name": "transfer-backend",
+  "version": "1.0.0",
+  "description": "Transfer is a simple banking app where users can transfer funds between themselves.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "rimraf dist && babel src --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "start": "node dist/index.js",
+    "sync-env": "sync-dotenv"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibkadeeko/transfer-backend.git"
+  },
+  "keywords": [
+    "internet",
+    "banking",
+    "transfer",
+    "funds"
+  ],
+  "author": "Ibukunoluwa Adeeko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ibkadeeko/transfer-backend/issues"
+  },
+  "homepage": "https://github.com/ibkadeeko/transfer-backend#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.8",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.11",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.2.1",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.1",
+    "sync-dotenv": "^2.4.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run sync-env"
+    }
+  }
+}
