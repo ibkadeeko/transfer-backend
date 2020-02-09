@@ -4,6 +4,10 @@ dotenv.config();
 
 const port = process.env.PORT || 8080;
 const env = process.env.NODE_ENV || 'development';
+const secrets = {
+  jwt: process.env.JWT_SECRET,
+  jwtExp: 21600,
+};
 let databaseURL;
 
 switch (env) {
@@ -22,5 +26,6 @@ switch (env) {
 export default {
   port,
   env,
+  secrets,
   databaseURL,
 };
