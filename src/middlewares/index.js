@@ -24,7 +24,7 @@ export const validator = schema => {
 
     if (hasErrors) {
       const arrayOfErrors = Object.values(errors.mapped()).map(value => value.msg);
-      return errorResponse(next, arrayOfErrors[0], 200);
+      return errorResponse(next, arrayOfErrors[0], 422);
     }
 
     return next();

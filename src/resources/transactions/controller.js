@@ -1,4 +1,6 @@
-import { successResponse, errorResponse } from '../../utils/responseHandlers';
+import { successResponse, errorResponse, AppError } from '../../utils/responseHandlers';
+import { getUserById, checkUserExists } from '../users/DAL';
+import { makeTransaction } from './DAL';
 
 /**
  * Gets all transactions performed by a user
@@ -35,7 +37,7 @@ export const getOneTransaction = async (request, response, next) => {
 };
 
 /**
- * Transfer money in to your online account
+ * Transfer money into or out of your online account
  *
  * @param {Object} request express request object
  * @param {Object} response express response object
@@ -43,27 +45,49 @@ export const getOneTransaction = async (request, response, next) => {
  *
  * @returns {Promise<Function | Object>} returns one of express next function or response object
  */
-export const creditTransaction = async (request, response, next) => {
+export const createTransaction = async (request, response, next) => {
   try {
     // Transfer money into your online wallet
-  } catch (error) {
-    return errorResponse(next, error.message);
-  }
-};
+    const { id: userId } = request.user;
+    const user = await getUserById(userId);
+    const { type, amount, ...details } = request.body;
 
-/**
- * Transfer money out of your online account
- *
- * @param {Object} request express request object
- * @param {Object} response express response object
- * @param {Function} next express next function
- *
- * @returns {Promise<Function | Object>} returns one of express next function or response object
- */
-export const debitTransaction = async (request, response, next) => {
-  try {
-    // Transfer money out of your online wallet
+    const sufficientFunds = user.account.balance >= amount;
+
+    if (type === 'transfer') {
+      if (user.email === details.receiver) {
+        throw new AppError('cannot transfer money to yourself', 400);
+      }
+      if (!sufficientFunds) {
+        throw new AppError('insufficient funds', 400);
+      }
+      const { _id: receiverId } = await checkUserExists(details.receiver);
+      const transactionDetails = {
+        amount,
+        type,
+        customer: receiverId,
+        createdBy: userId,
+      };
+      await makeTransaction(transactionDetails);
+      return successResponse(response, 'transaction successful', 200);
+    } else {
+      if (type === 'withdrawal' && !sufficientFunds) {
+        throw new AppError('insufficient funds', 400);
+      }
+      const transactionDetails = {
+        amount,
+        type,
+        createdBy: userId,
+        bank: {
+          name: details.bankName,
+          accountName: details.bankAccountName,
+          accountNumber: details.bankAccountNumber,
+        },
+      };
+      await makeTransaction(transactionDetails);
+      return successResponse(response, 'transaction successful', 200);
+    }
   } catch (error) {
-    return errorResponse(next, error.message);
+    return next(error);
   }
 };
