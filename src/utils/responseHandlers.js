@@ -4,7 +4,7 @@
  *
  * @returns {Error} error object
  */
-class AppError extends Error {
+export class AppError extends Error {
   /**
    * @param {string} message error message
    * @param {number} statusCode error code
